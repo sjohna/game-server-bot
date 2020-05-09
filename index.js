@@ -10,7 +10,7 @@ const PsCommand = require('./commands/psCommand')
 
 const commands = [
     new PingCommand('!'),
-    new PsCommand('!')
+    new PsCommand('!',['jstevens'])
 ]
 
 commands.push(new ListCommand('!',commands))
@@ -27,7 +27,10 @@ client.on('message', async (message) => {
 
       for (let command of commands) {
           if(command.canHandle(tokens[0])) {
-              message.channel.send(await command.handle(tokens.slice(1)));
+              const responseLines = await command.handle(tokens.slice(1));
+              for (const line of responseLines) {
+                message.channel.send(line);
+              }
               break;
           }
       }

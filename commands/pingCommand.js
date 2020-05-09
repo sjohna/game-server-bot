@@ -10,7 +10,7 @@ class PingCommand {
     }
 
     handle(args) {
-        return Promise.resolve("Pong!")
+        return Promise.resolve(["`!ping` - Pong!"])
     }
 }
 

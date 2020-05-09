@@ -11,7 +11,7 @@ class ListCommand {
     }
 
     handle(args) {
-        return Promise.resolve(this.commands.map(c => c.helpText).join("\n"));
+        return Promise.resolve(['`!list` - available commands:',...this.commands.map(c => c.helpText)]);
     }   
 }
 
