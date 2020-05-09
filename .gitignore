@@ -1,3 +1,6 @@
+# don't include auth token in repo
+auth.json
+
 # Logs
 logs
 *.log
