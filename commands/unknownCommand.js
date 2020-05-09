@@ -8,7 +8,7 @@ class UnknownCommand {
     }
 
     handle(args) {
-        return `Unknown command. Type \`${this.listCommand}\` for a list of commands.`
+        return Promise.resolve(`Unknown command. Type \`${this.listCommand}\` for a list of commands.`)
     }   
 }
 

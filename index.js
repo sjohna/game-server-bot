@@ -6,9 +6,11 @@ const auth = require('./auth.json');
 const PingCommand = require('./commands/pingCommand')
 const ListCommand = require('./commands/listCommand')
 const UnknownCommand = require('./commands/unknownCommand')
+const PsCommand = require('./commands/psCommand')
 
 const commands = [
     new PingCommand('!'),
+    new PsCommand('!')
 ]
 
 commands.push(new ListCommand('!',commands))
@@ -19,13 +21,13 @@ client.on('ready', () => {
 });
 
 // Create an event listener for messages
-client.on('message', message => {
+client.on('message', async (message) => {
   if(message.content.startsWith('!')) {
       const tokens = message.content.split(/(\s+)/).filter(e => e.trim().length > 0);
 
       for (let command of commands) {
           if(command.canHandle(tokens[0])) {
-              message.channel.send(command.handle(tokens.slice(1)));
+              message.channel.send(await command.handle(tokens.slice(1)));
               break;
           }
       }
