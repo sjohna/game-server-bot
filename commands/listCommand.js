@@ -11,7 +11,7 @@ class ListCommand {
     }
 
     handle(args) {
-        return Promise.resolve(['`!list` - available commands:',...this.commands.map(c => c.helpText)]);
+        return Promise.resolve(this.commands.map(c => c.helpText).filter(line => line && line.trim().length > 0));
     }   
 }
 

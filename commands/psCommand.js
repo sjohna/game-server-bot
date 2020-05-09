@@ -16,7 +16,7 @@ class PsCommand {
     async handle(args) {
         const shellCommand = `ps -U ${this.users.join(',')} -o pid,pcpu,pmem,args`
         const psOutput = await exec(shellCommand)
-        return ['`!ps` - host process info:', `\`>${shellCommand}\``, ...psOutput.stdout.split('\n').filter(line => line.trim().length > 0).map(line => `\`${line}\``)]
+        return [`\`>${shellCommand}\``, ...psOutput.stdout.split('\n').filter(line => line.trim().length > 0).map(line => `\`${line}\``)]
     }
 }
 
