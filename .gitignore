@@ -1,5 +1,6 @@
-# don't include auth token in repo
+# keep private data out of repo
 auth.json
+whitelist.json
 
 # Logs
 logs

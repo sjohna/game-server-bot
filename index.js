@@ -2,8 +2,8 @@
 
 const Discord = require('discord.js');
 const pino = require('pino')
-const client = new Discord.Client();
 const auth = require('./auth.json');
+const whitelist = require('./whitelist.json')
 const PingCommand = require('./commands/pingCommand')
 const ListCommand = require('./commands/listCommand')
 const UnknownCommand = require('./commands/unknownCommand')
@@ -12,15 +12,17 @@ const PsCommand = require('./commands/psCommand')
 const logger = pino()
 
 const commands = [
-    new PingCommand('!'),
-    new PsCommand('!',['jstevens'])
+  new PingCommand('!'),
+  new PsCommand('!',['jstevens'])
 ]
 
 commands.push(new ListCommand('!',commands))
 commands.push(new UnknownCommand('!list'))
 
+const client = new Discord.Client();
+
 client.on('ready', () => {
-  console.log('I am ready!');
+    console.log('I am ready!');
 });
 
 const sendToChannel = function(channel,message) {
@@ -33,23 +35,40 @@ const logReceive = function(message) {
 }
 
 // Create an event listener for messages
-client.on('message', async (message) => {
-  if(message.content.startsWith('!')) {
-      logReceive(message)
-      const tokens = message.content.split(/(\s+)/).filter(e => e.trim().length > 0);
+client.on('message', async (message) => { 
+    let channelWhitelisted = false;
+    for (const whitelistEntry of whitelist) {
+        if (message.channel.guild.name == whitelistEntry.guild) {
+            for (const channel of whitelistEntry.channels) {
+                if (message.channel.name == channel) {
+                    channelWhitelisted = true;
+                    break;
+                }
+            }
+            break;
+        }
+    }
 
-      for (let command of commands) {
-          if(command.canHandle(tokens[0])) {
-              sendToChannel(message.channel, `<@${message.author.id}> - \`${tokens[0]}\``)
+    if (!channelWhitelisted) {
+        return;
+    }
+
+    if(message.content.startsWith('!')) {
+        logReceive(message)
+        const tokens = message.content.split(/(\s+)/).filter(e => e.trim().length > 0);
+
+        for (let command of commands) {
+            if(command.canHandle(tokens[0])) {
+                sendToChannel(message.channel, `<@${message.author.id}> - \`${tokens[0]}\``)
               
-              const responseLines = await command.handle(tokens.slice(1));
-              for (const line of responseLines) {
-                sendToChannel(message.channel, line);
-              }
-              break;
-          }
-      }
-  }
+                const responseLines = await command.handle(tokens.slice(1));
+                for (const line of responseLines) {
+                  sendToChannel(message.channel, line);
+                }
+                break;
+            }
+        }
+    }
 });
 
 try {
