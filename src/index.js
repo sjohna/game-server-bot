@@ -13,19 +13,40 @@ const config = require('./config.json')
 const logger = pino({ level: config.logLevel || 'info' })
 
 // support functions
+
+/**
+ * Convert a discord.js channel into an appropriate string representation.
+ */
 const serverChannelNameString = function (channel) {
   return `${channel.guild.name}#${channel.name} (${channel.id})`
 }
 
+/**
+ * Send specified content to a discord.js channel.
+ */
 const sendToChannel = function (channel, content) {
   logger.info(`(Send) To: ${serverChannelNameString(channel)} Content: \n${content}`)
   channel.send(content)
 }
 
+/**
+ * Log receipt of a discord.js message
+ */
 const logReceive = function (message) {
   logger.info(`(Receive) From: ${message.author.username} <@${message.author.id}> On: ${serverChannelNameString(message.channel)} Content: ${message.content}`)
 }
 
+/**
+ * Consolidate lines to be sent into fewer messages.
+ *
+ * The initial behavior of the bot was to send one message per line. However,
+ * for replies with a lot of lines (e.g. for the top and ps commands), the bot
+ * gets rate-limited, and the response is sluggish. This function consolidates
+ * the lines generated in response to a command so that fewer messages are sent.
+ * The function keeps each reply message to under 2000 characters, since messages
+ * over that length are rejected by Discord (not sure if that's how my server is
+ * set up, or if that's a global limit).
+ */
 const consolidateLinesToSend = function * (lines) {
   let lengthOfConsolidatedLines = 0
   let linesToConsolidate = []
@@ -51,6 +72,9 @@ const consolidateLinesToSend = function * (lines) {
   }
 }
 
+/**
+ * Determine whether a discord.js channel is on the whitelist.
+ */
 const channelIsWhitelisted = function (channel) {
   let channelWhitelisted = false
   for (const whitelistEntry of config.whitelist) {

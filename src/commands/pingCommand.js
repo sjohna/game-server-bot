@@ -1,3 +1,6 @@
+/**
+ * Check bot for life.
+ */
 class PingCommand {
   constructor (prefix) {
     this.prefix = prefix

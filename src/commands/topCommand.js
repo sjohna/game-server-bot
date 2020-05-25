@@ -1,11 +1,18 @@
 const { promisify } = require('util')
 const exec = promisify(require('child_process').exec)
 
+/**
+ * Runs top command in shell to get system resource usage and resource usage
+ * for processes running as a particular OS user.
+ */
 class TopCommand {
-  constructor (prefix, user) {
-    this.prefix = prefix
-    this.command = prefix + 'top'
-    this.helpText = `\`${this.command}\` - Show resource usage of hosted processes`
+  /**
+   * @param {*} user OS user to get process resource usage for.
+   */
+  constructor (commandPrefix, user) {
+    this.prefix = commandPrefix
+    this.command = commandPrefix + 'top'
+    this.helpText = `\`${this.command}\` - Show current resource usage of server and hosted processes`
     this.user = user
   }
 

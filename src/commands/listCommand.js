@@ -1,7 +1,13 @@
+/**
+ * List available commands on the server.
+ */
 class ListCommand {
-  constructor (prefix, commands) {
-    this.prefix = prefix
-    this.command = prefix + 'list'
+  /**
+   * @param {*} commands List of commands available on the server.
+   */
+  constructor (commandPrefix, commands) {
+    this.prefix = commandPrefix
+    this.command = commandPrefix + 'list'
     this.helpText = `\`${this.command}\` - List available commands.`
     this.commands = commands
   }
