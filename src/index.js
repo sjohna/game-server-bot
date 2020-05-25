@@ -12,30 +12,18 @@ const config = require('./config.json')
 
 const logger = pino({ level: config.logLevel || 'info' })
 
-const commands = [
-  new PingCommand(config.commandPrefix),
-  new PsCommand(config.commandPrefix, config.user),
-  new TopCommand(config.commandPrefix, config.user)
-]
+// support functions
+const serverChannelNameString = function (channel) {
+  return `${channel.guild.name}#${channel.name} (${channel.id})`
+}
 
-const listCommand = new ListCommand(config.commandPrefix, commands)
-
-commands.push(listCommand)
-commands.push(new UnknownCommand(listCommand.command))
-
-const client = new Discord.Client()
-
-client.on('ready', () => {
-  console.log('I am ready!')
-})
-
-const sendToChannel = function (channel, message) {
-  logger.info(`(Send) To: ${channel.guild}#${channel.name} Content: ${message}`)
-  channel.send(message)
+const sendToChannel = function (channel, content) {
+  logger.info(`(Send) To: ${serverChannelNameString(channel)} Content: \n${content}`)
+  channel.send(content)
 }
 
 const logReceive = function (message) {
-  logger.info(`(Receive) From: ${message.author.username} <@${message.author.id}> On: ${message.channel.guild}#${message.channel.name} (${message.channel.id}) Content: ${message.content}`)
+  logger.info(`(Receive) From: ${message.author.username} <@${message.author.id}> On: ${serverChannelNameString(message.channel)} Content: ${message.content}`)
 }
 
 const consolidateLinesToSend = function * (lines) {
@@ -63,13 +51,12 @@ const consolidateLinesToSend = function * (lines) {
   }
 }
 
-// Create an event listener for messages
-client.on('message', async (message) => {
+const channelIsWhitelisted = function (channel) {
   let channelWhitelisted = false
   for (const whitelistEntry of config.whitelist) {
-    if (message.channel.guild.name === whitelistEntry.guild) {
-      for (const channel of whitelistEntry.channels) {
-        if (message.channel.name === channel) {
+    if (channel.guild.name === whitelistEntry.guild) {
+      for (const whitelistChannelName of whitelistEntry.channels) {
+        if (channel.name === whitelistChannelName) {
           channelWhitelisted = true
           break
         }
@@ -78,12 +65,36 @@ client.on('message', async (message) => {
     }
   }
 
-  if (!channelWhitelisted) {
-    logger.debug(`Received message on non-whitelisted guild/channel: ${message.channel.guild.name}#${message.channel.name}`)
-    return
-  }
+  return channelWhitelisted
+}
 
-  if (message.content.startsWith('!')) {
+// create command objects
+const commands = [
+  new PingCommand(config.commandPrefix),
+  new PsCommand(config.commandPrefix, config.user),
+  new TopCommand(config.commandPrefix, config.user)
+]
+
+const listCommand = new ListCommand(config.commandPrefix, commands)
+
+commands.push(listCommand)
+commands.push(new UnknownCommand(listCommand.command))
+
+// create discord.js client and configure events
+const client = new Discord.Client()
+
+client.on('ready', () => {
+  logger.info('Game server bot started.')
+})
+
+// Create an event listener for messages
+client.on('message', async (message) => {
+  if (message.content.startsWith(config.commandPrefix)) {
+    if (!channelIsWhitelisted(message.channel)) {
+      logger.debug(`(Reject) Message on non-whitelisted channel ${serverChannelNameString(message.channel)}`)
+      return
+    }
+
     logReceive(message)
     const tokens = message.content.split(/(\s+)/).filter(e => e.trim().length > 0)
 
@@ -101,8 +112,4 @@ client.on('message', async (message) => {
   }
 })
 
-try {
-  client.login(config.authToken).catch((err) => console.log(err))
-} catch {
-  console.log('Failed to log in')
-}
+client.login(config.authToken).catch((err) => logger.error(err, 'Error logging in, server aborting.'))
