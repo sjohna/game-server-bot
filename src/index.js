@@ -10,7 +10,7 @@ const TopCommand = require('./commands/topCommand')
 
 const config = require('./config.json')
 
-const logger = pino()
+const logger = pino({ level: config.logLevel || 'info' })
 
 const commands = [
   new PingCommand(config.commandPrefix),
@@ -79,6 +79,7 @@ client.on('message', async (message) => {
   }
 
   if (!channelWhitelisted) {
+    logger.debug(`Received message on non-whitelisted guild/channel: ${message.channel.guild.name}#${message.channel.name}`)
     return
   }
 

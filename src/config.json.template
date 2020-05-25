@@ -7,5 +7,6 @@
       "guild": "<whitelisted server>", 
       "channels": ["<whitelisted channel 1>", "<whitelisted channel 2>"] 
     }
-  ]
+  ],
+  "logLevel": "info"
 }
