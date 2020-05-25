@@ -2,8 +2,6 @@
 
 const Discord = require('discord.js')
 const pino = require('pino')
-const auth = require('./auth.json')
-const whitelist = require('./whitelist.json')
 const PingCommand = require('./commands/pingCommand')
 const ListCommand = require('./commands/listCommand')
 const UnknownCommand = require('./commands/unknownCommand')
@@ -68,7 +66,7 @@ const consolidateLinesToSend = function * (lines) {
 // Create an event listener for messages
 client.on('message', async (message) => {
   let channelWhitelisted = false
-  for (const whitelistEntry of whitelist) {
+  for (const whitelistEntry of config.whitelist) {
     if (message.channel.guild.name === whitelistEntry.guild) {
       for (const channel of whitelistEntry.channels) {
         if (message.channel.name === channel) {
@@ -103,7 +101,7 @@ client.on('message', async (message) => {
 })
 
 try {
-  client.login(auth.token).catch((err) => console.log(err))
+  client.login(config.authToken).catch((err) => console.log(err))
 } catch {
   console.log('Failed to log in')
 }
