@@ -36,6 +36,32 @@ const logReceive = function(message) {
     logger.info(`(Receive) From: ${message.author.username} <@${message.author.id}> On: ${message.channel.guild}#${message.channel.name} (${message.channel.id}) Content: ${message.content}`)
 }
 
+const consolidateLinesToSend = function*(lines) {
+    let lengthOfConsolidatedLines = 0;
+    let linesToConsolidate = [];
+    for (const line of lines) {
+        if(line.length >= 2000) {
+            logger.warn(`Line too long, cannot send: ${line}`)
+            continue;
+        }
+
+        let newLength = line.length + lengthOfConsolidatedLines + Math.max(linesToConsolidate.length - 1,0);
+        if (newLength < 2000) {
+            linesToConsolidate.push(line);
+            lengthOfConsolidatedLines += line.length;
+        }
+        else {
+            yield linesToConsolidate.join('\n');
+            linesToConsolidate = [line];
+            lengthOfConsolidatedLines = line.length;
+        }
+    }
+
+    if(linesToConsolidate.length > 0) {
+        yield linesToConsolidate.join('\n');
+    }
+}
+
 // Create an event listener for messages
 client.on('message', async (message) => { 
     let channelWhitelisted = false;
@@ -64,7 +90,7 @@ client.on('message', async (message) => {
                 sendToChannel(message.channel, `<@${message.author.id}> - \`${tokens[0]}\``)
               
                 const responseLines = await command.handle(tokens.slice(1));
-                for (const line of responseLines) {
+                for (const line of consolidateLinesToSend(responseLines)) {
                   sendToChannel(message.channel, line);
                 }
                 break;
