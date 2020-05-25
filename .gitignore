@@ -1,6 +1,7 @@
 # keep private data out of repo
 src/auth.json
 src/whitelist.json
+src/config.json
 
 # Logs
 logs

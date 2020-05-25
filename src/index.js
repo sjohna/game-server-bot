@@ -10,16 +10,20 @@ const UnknownCommand = require('./commands/unknownCommand')
 const PsCommand = require('./commands/psCommand')
 const TopCommand = require('./commands/topCommand')
 
+const config = require('./config.json')
+
 const logger = pino()
 
 const commands = [
-  new PingCommand('!'),
-  new PsCommand('!', 'jstevens'),
-  new TopCommand('!', 'jstevens')
+  new PingCommand(config.commandPrefix),
+  new PsCommand(config.commandPrefix, config.user),
+  new TopCommand(config.commandPrefix, config.user)
 ]
 
-commands.push(new ListCommand('!', commands))
-commands.push(new UnknownCommand('!list'))
+const listCommand = new ListCommand(config.commandPrefix, commands)
+
+commands.push(listCommand)
+commands.push(new UnknownCommand(listCommand.command))
 
 const client = new Discord.Client()
 
