@@ -1,15 +1,15 @@
 class UnknownCommand {
-    constructor(listCommand) {
-        this.listCommand = listCommand
-    }
+  constructor (listCommand) {
+    this.listCommand = listCommand
+  }
 
-    canHandle(command) {
-        return true;
-    }
+  canHandle (command) {
+    return true
+  }
 
-    handle(args) {
-        return Promise.resolve([`Unknown command. Type \`${this.listCommand}\` for a list of commands.`])
-    }   
+  handle (args) {
+    return Promise.resolve([`Unknown command. Type \`${this.listCommand}\` for a list of commands.`])
+  }
 }
 
-module.exports = UnknownCommand;
+module.exports = UnknownCommand
