@@ -14,7 +14,7 @@ const logger = pino()
 
 const commands = [
   new PingCommand('!'),
-  new PsCommand('!', ['jstevens']),
+  new PsCommand('!', 'jstevens'),
   new TopCommand('!', 'jstevens')
 ]
 
