@@ -3,7 +3,7 @@ src/auth.json
 src/whitelist.json
 src/config.json
 
-# vim swp files
+# vi swp files
 **/*.swp
 
 # Logs
