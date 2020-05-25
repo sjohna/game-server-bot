@@ -1,0 +1,11 @@
+{
+  "user": "<user>",
+  "commandPrefix": "!",
+  "authToken": "<discord bot auth token>", 
+  "whitelist": [
+    {
+      "guild": "<whitelisted server>", 
+      "channels": ["<whitelisted channel 1>", "<whitelisted channel 2>"] 
+    }
+  ]
+}
