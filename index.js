@@ -8,12 +8,14 @@ const PingCommand = require('./commands/pingCommand')
 const ListCommand = require('./commands/listCommand')
 const UnknownCommand = require('./commands/unknownCommand')
 const PsCommand = require('./commands/psCommand')
+const TopCommand = require('./commands/topCommand')
 
 const logger = pino()
 
 const commands = [
   new PingCommand('!'),
-  new PsCommand('!',['jstevens'])
+  new PsCommand('!',['jstevens']),
+  new TopCommand('!', 'jstevens')
 ]
 
 commands.push(new ListCommand('!',commands))
