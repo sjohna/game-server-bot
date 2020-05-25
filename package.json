@@ -2,12 +2,12 @@
   "name": "gameserverbot",
   "version": "0.0.0",
   "description": "Discord bot to get status of a linux dedicated server.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "node index.js | npx pino-pretty",
+    "start": "node src/index.js | npx pino-pretty",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint index.js commands/*.js",
-    "lintfix": "npx eslint index.js commands/*.js --fix"
+    "lint": "npx eslint src/**/*.js",
+    "lintfix": "npx eslint src/**/*.js --fix"
   },
   "author": "John Stevens",
   "license": "MIT",

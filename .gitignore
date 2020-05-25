@@ -1,6 +1,6 @@
 # keep private data out of repo
-auth.json
-whitelist.json
+src/auth.json
+src/whitelist.json
 
 # Logs
 logs
