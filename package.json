@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node src/index.js | npx pino-pretty",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint src/**/*.js",
-    "lintfix": "npx eslint src/**/*.js --fix"
+    "lint": "npx eslint '**/*.js'",
+    "lintfix": "npx eslint '**/*.js' --fix"
   },
   "author": "John Stevens",
   "license": "MIT",
