@@ -104,6 +104,9 @@ const commands = [
 const listCommand = new ListCommand(config.commandPrefix, commands)
 
 commands.push(listCommand)
+
+commands.sort((first, second) => first.command.localeCompare(second.command))
+
 commands.push(new UnknownCommand(listCommand.command))
 
 // create discord.js client and configure events
