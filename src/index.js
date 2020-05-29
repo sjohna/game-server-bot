@@ -7,6 +7,7 @@ const ListCommand = require('./commands/listCommand')
 const UnknownCommand = require('./commands/unknownCommand')
 const PsCommand = require('./commands/psCommand')
 const TopCommand = require('./commands/topCommand')
+const IpCommand = require('./commands/ipCommand')
 
 const config = require('./config.json')
 
@@ -96,7 +97,8 @@ const channelIsWhitelisted = function (channel) {
 const commands = [
   new PingCommand(config.commandPrefix),
   new PsCommand(config.commandPrefix, config.user),
-  new TopCommand(config.commandPrefix, config.user)
+  new TopCommand(config.commandPrefix, config.user),
+  new IpCommand(config.commandPrefix)
 ]
 
 const listCommand = new ListCommand(config.commandPrefix, commands)

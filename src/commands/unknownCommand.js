@@ -1,6 +1,6 @@
 /**
  * Catch-all handler for unknown commands.
- * 
+ *
  * Should be placed at the end of the command list to catch any commands not
  * handled by other command objects.
  */
